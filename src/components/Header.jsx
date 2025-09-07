@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ArrowLeft, Video, User, Crown, LogOut, Settings, Menu, X } from 'lucide-react'
+import { ArrowLeft, Video, User, Crown, LogOut, Settings } from 'lucide-react'
 import useAuthStore from '../store/authStore'
 import AuthModal from './auth/AuthModal'
 import PricingModal from './subscription/PricingModal'

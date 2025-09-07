@@ -46,7 +46,7 @@ api.interceptors.response.use(
 
 // Auth API
 export const authAPI = {
-  login: async (email, password) => {
+  login: async (email, _password) => {
     // Mock implementation - replace with real API
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -65,7 +65,7 @@ export const authAPI = {
     })
   },
   
-  register: async (name, email, password) => {
+  register: async (name, email, _password) => {
     // Mock implementation - replace with real API
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -154,7 +154,7 @@ Ready to transform your results? Take the first step today!`,
 
 // Storage API
 export const storageAPI = {
-  uploadFile: async (file, type = 'asset') => {
+  uploadFile: async (file, _type = 'asset') => {
     // Mock implementation - replace with real cloud storage
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -169,7 +169,7 @@ export const storageAPI = {
     })
   },
   
-  deleteFile: async (fileUrl) => {
+  deleteFile: async (_fileUrl) => {
     // Mock implementation
     return Promise.resolve({ success: true })
   }

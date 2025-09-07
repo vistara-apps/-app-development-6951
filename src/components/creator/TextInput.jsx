@@ -36,7 +36,7 @@ const TextInput = ({ projectData, updateProjectData, onNext }) => {
       <div>
         <h3 className="text-xl font-semibold text-white mb-4">Input Your Content</h3>
         <p className="text-purple-200 mb-6">
-          Paste your blog post, article, or any text content that you'd like to transform into a video.
+          Paste your blog post, article, or any text content that you&apos;d like to transform into a video.
         </p>
       </div>
       
@@ -104,7 +104,7 @@ const TextInput = ({ projectData, updateProjectData, onNext }) => {
           {!projectData.generatedScript && !isGenerating && (
             <div className="text-center py-8 text-purple-300">
               <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p>Click "Generate Script" to create your video script</p>
+              <p>Click &quot;Generate Script&quot; to create your video script</p>
             </div>
           )}
         </div>

@@ -42,7 +42,7 @@ const PricingModal = ({ isOpen, onClose }) => {
     setSelectedPlan(planId)
 
     try {
-      const response = await subscriptionAPI.createCheckoutSession(planId)
+      await subscriptionAPI.createCheckoutSession(planId)
       
       // In a real implementation, redirect to Stripe Checkout
       // window.location.href = response.data.url

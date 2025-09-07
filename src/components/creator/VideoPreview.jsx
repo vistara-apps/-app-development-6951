@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Play, Pause, RotateCcw, Download, Loader2, Wand2, Edit3 } from 'lucide-react'
 
 const VideoPreview = ({ projectData, updateProjectData, onNext }) => {
@@ -11,9 +11,9 @@ const VideoPreview = ({ projectData, updateProjectData, onNext }) => {
     if (!projectData.videoPreview && projectData.selectedTemplate) {
       generateVideoPreview()
     }
-  }, [])
+  }, [projectData.videoPreview, projectData.selectedTemplate, generateVideoPreview])
 
-  const generateVideoPreview = async () => {
+  const generateVideoPreview = useCallback(async () => {
     setIsGenerating(true)
     
     // Simulate video generation
@@ -37,7 +37,7 @@ const VideoPreview = ({ projectData, updateProjectData, onNext }) => {
       updateProjectData({ videoPreview: mockVideoData })
       setIsGenerating(false)
     }, 3000)
-  }
+  }, [updateProjectData])
 
   const togglePlayback = () => {
     setIsPlaying(!isPlaying)
