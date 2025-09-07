@@ -1,22 +1,47 @@
-import React, { useRef } from 'react'
-import { Upload, Palette, Type, Image } from 'lucide-react'
+import React, { useRef, useState } from 'react'
+import { Upload, Palette, Type, Image, Loader2 } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { storageAPI } from '../../services/api'
 
 const BrandKit = ({ projectData, updateProjectData, onNext }) => {
   const logoInputRef = useRef(null)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const handleLogoUpload = (event) => {
+  const handleLogoUpload = async (event) => {
     const file = event.target.files[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please upload an image file')
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB')
+        return
+      }
+      
+      setIsUploading(true)
+      
+      try {
+        const uploadResult = await storageAPI.uploadFile(file, 'logo')
+        
         updateProjectData({
           brandAssets: {
             ...projectData.brandAssets,
-            logo: e.target.result
+            logo: uploadResult.url,
+            logoFile: uploadResult
           }
         })
+        
+        toast.success('Logo uploaded successfully!')
+      } catch (error) {
+        console.error('Logo upload error:', error)
+        toast.error('Failed to upload logo. Please try again.')
+      } finally {
+        setIsUploading(false)
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -52,10 +77,17 @@ const BrandKit = ({ projectData, updateProjectData, onNext }) => {
           </h4>
           
           <div
-            onClick={() => logoInputRef.current?.click()}
-            className="border-2 border-dashed border-white/30 rounded-lg p-8 text-center cursor-pointer hover:border-purple-400 transition-colors bg-black/20"
+            onClick={() => !isUploading && logoInputRef.current?.click()}
+            className={`border-2 border-dashed border-white/30 rounded-lg p-8 text-center transition-colors bg-black/20 ${
+              isUploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-purple-400'
+            }`}
           >
-            {projectData.brandAssets.logo ? (
+            {isUploading ? (
+              <div className="space-y-2">
+                <Loader2 className="w-8 h-8 text-purple-300 mx-auto animate-spin" />
+                <p className="text-white">Uploading...</p>
+              </div>
+            ) : projectData.brandAssets.logo ? (
               <div className="space-y-2">
                 <img
                   src={projectData.brandAssets.logo}

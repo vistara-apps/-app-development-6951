@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Wand2, FileText, Loader2 } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { aiAPI } from '../../services/api'
 
 const TextInput = ({ projectData, updateProjectData, onNext }) => {
   const [isGenerating, setIsGenerating] = useState(false)
@@ -9,31 +11,24 @@ const TextInput = ({ projectData, updateProjectData, onNext }) => {
     
     setIsGenerating(true)
     
-    // Simulate AI script generation
-    setTimeout(() => {
-      const generatedScript = `
-Scene 1: Hook (0-3s)
-"Did you know that ${projectData.scriptContent.split(' ').slice(0, 5).join(' ')}?"
-
-Scene 2: Problem (3-10s)
-Many people struggle with this exact issue. Here's why it matters...
-
-Scene 3: Solution (10-25s)
-${projectData.scriptContent.split('.')[0]}.
-
-Scene 4: Benefits (25-40s)
-This approach will help you achieve better results and save time.
-
-Scene 5: Call to Action (40-45s)
-Ready to get started? Take action today!
-      `.trim()
+    try {
+      const result = await aiAPI.generateScript(projectData.scriptContent, {
+        platform: projectData.videoSettings?.platform || 'youtube'
+      })
       
       updateProjectData({ 
-        generatedScript,
-        title: projectData.scriptContent.split(' ').slice(0, 6).join(' ') + '...'
+        generatedScript: result.script,
+        scenes: result.scenes,
+        title: projectData.title || projectData.scriptContent.split(' ').slice(0, 6).join(' ') + '...'
       })
+      
+      toast.success('Script generated successfully!')
+    } catch (error) {
+      console.error('Script generation error:', error)
+      toast.error('Failed to generate script. Please try again.')
+    } finally {
       setIsGenerating(false)
-    }, 2000)
+    }
   }
 
   return (
@@ -41,7 +36,7 @@ Ready to get started? Take action today!
       <div>
         <h3 className="text-xl font-semibold text-white mb-4">Input Your Content</h3>
         <p className="text-purple-200 mb-6">
-          Paste your blog post, article, or any text content that you'd like to transform into a video.
+          Paste your blog post, article, or any text content that you&apos;d like to transform into a video.
         </p>
       </div>
       
@@ -109,7 +104,7 @@ Ready to get started? Take action today!
           {!projectData.generatedScript && !isGenerating && (
             <div className="text-center py-8 text-purple-300">
               <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p>Click "Generate Script" to create your video script</p>
+              <p>Click &quot;Generate Script&quot; to create your video script</p>
             </div>
           )}
         </div>
