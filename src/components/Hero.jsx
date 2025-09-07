@@ -1,7 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Play, Sparkles, Zap, Target } from 'lucide-react'
+import useAuthStore from '../store/authStore'
+import AuthModal from './auth/AuthModal'
 
 const Hero = ({ onGetStarted }) => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const { isAuthenticated } = useAuthStore()
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      onGetStarted()
+    } else {
+      setIsAuthModalOpen(true)
+    }
+  }
   return (
     <section className="relative px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       <div className="max-w-7xl mx-auto">
@@ -26,7 +38,7 @@ const Hero = ({ onGetStarted }) => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               className="group bg-white text-purple-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-50 transition-all duration-200 shadow-glow hover:shadow-xl transform hover:scale-105 flex items-center space-x-2"
             >
               <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -69,6 +81,12 @@ const Hero = ({ onGetStarted }) => {
       {/* Decorative elements */}
       <div className="absolute top-1/4 left-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
       <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></div>
+      
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="signup"
+      />
     </section>
   )
 }
